@@ -1,8 +1,8 @@
 name: icon_gallery
 description: "A flutter package for picking icon from material icons or your own icons."
-version: 0.0.1
-homepage: https://github.com/PersianFlutter/iconpicker
-repository: https://github.com/PersianFlutter/iconpicker
+version: 0.0.2
+homepage: https://github.com/PersianFlutter/icon_gallery
+repository: https://github.com/PersianFlutter/icon_gallery
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
