@@ -1,7 +1,6 @@
 library icon_gallery;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+// core
+export 'src/core/enums/shared_enums.dart';
+// widgets
+export 'src/widgets/base_widget_builder.dart';
