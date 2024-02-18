@@ -1,16 +1,19 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:icon_gallery/icon_gallery.dart';
+import 'package:icon_gallery/src/data/data_builder.dart';
 
-class BaseWidgetBuilder extends StatelessWidget {
+class BaseWidgetBuilder<T> extends StatelessWidget {
   const BaseWidgetBuilder({
-    required this.type,
     super.key,
+    required this.optionBuilder,
   });
 
-  final BaseWidgetType type;
+  final OptionBuilder<T> optionBuilder;
+
 
   @override
   Widget build(BuildContext context) {
+    // TODO(md): Use the optionBuilder to build the widget.
     return Container();
   }
 }
