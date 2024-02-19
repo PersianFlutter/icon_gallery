@@ -22,9 +22,12 @@ class ImageGallery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        childAspectRatio: 1,
+      ),
       itemCount: items.length,
+      shrinkWrap: true,
       itemBuilder: (context, index) =>
           builder.widgetBuilder(context, items[index]),
     );
