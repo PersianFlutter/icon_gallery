@@ -9,8 +9,8 @@ class IconDataOptionBuilder extends OptionBuilder<IconData> {
     this.color = Colors.black,
   });
 
-  final double size;
-  final Color color;
+  final double? size;
+  final Color? color;
 
   @override
   Widget widgetBuilder(BuildContext context, IconValue<IconData> value) {
