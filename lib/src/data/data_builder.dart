@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/svg.dart';
 
 class IconValue<T> {
   final T value;
@@ -64,6 +65,58 @@ class ImageAssetOptionBuilder extends OptionBuilder<String> {
       width: width,
       height: height,
       fit: fit,
+    );
+  }
+}
+
+class ImageNetworkOptionBuilder extends OptionBuilder<String> {
+  const ImageNetworkOptionBuilder(
+    super.options, {
+    this.width,
+    this.height,
+    this.fit,
+  });
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+
+  @override
+  Widget widgetBuilder(BuildContext context, IconValue<String> value) {
+    return Image.network(
+      value.value,
+      width: width,
+      height: height,
+      fit: fit,
+    );
+  }
+}
+
+class SvgOptionBuilder extends OptionBuilder<String> {
+  final double? width;
+  final double? height;
+  final Color? color;
+  final BlendMode? blendMode;
+
+  SvgOptionBuilder(
+    super.options, {
+    this.width,
+    this.height,
+    this.color,
+    this.blendMode,
+  });
+
+  @override
+  Widget widgetBuilder(BuildContext context, IconValue<String> value) {
+    return SvgPicture.asset(
+      value.value,
+      width: width,
+      height: height,
+      colorFilter: color == null
+          ? null
+          : ColorFilter.mode(
+              color!,
+              blendMode ?? BlendMode.srcIn,
+            ),
     );
   }
 }

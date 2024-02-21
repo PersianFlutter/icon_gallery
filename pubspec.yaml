@@ -5,12 +5,13 @@ homepage: https://github.com/PersianFlutter/icon_gallery
 repository: https://github.com/PersianFlutter/icon_gallery
 
 environment:
-  sdk: '>=3.2.3 <4.0.0'
+  sdk: ">=3.2.3 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
