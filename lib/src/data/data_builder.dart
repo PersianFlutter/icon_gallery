@@ -5,7 +5,10 @@ class IconValue<T> {
   final T value;
   final String name;
 
-  IconValue(this.value, this.name);
+  IconValue({
+    required this.value,
+    required this.name,
+  });
 }
 
 abstract class OptionBuilder<T> {
