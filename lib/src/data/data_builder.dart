@@ -12,9 +12,10 @@ class IconValue<T> {
 }
 
 abstract class OptionBuilder<T> {
-  const OptionBuilder(this.options);
+  const OptionBuilder(this.options, this.title);
 
   final List<IconValue<T>> options;
+  final Widget title;
 
   String nameBuilder(IconValue<T> value) => value.name;
 
@@ -30,7 +31,8 @@ abstract class OptionBuilder<T> {
 
 class IconDataOptionBuilder extends OptionBuilder<IconData> {
   const IconDataOptionBuilder(
-    super.options, {
+    super.options,
+    super.title, {
     this.size,
     this.color,
   });
@@ -51,6 +53,7 @@ class IconDataOptionBuilder extends OptionBuilder<IconData> {
 class ImageAssetOptionBuilder extends OptionBuilder<String> {
   const ImageAssetOptionBuilder(
     super.options,
+    super.title,
     this.width,
     this.height,
     this.fit,
@@ -74,7 +77,8 @@ class ImageAssetOptionBuilder extends OptionBuilder<String> {
 
 class ImageNetworkOptionBuilder extends OptionBuilder<String> {
   const ImageNetworkOptionBuilder(
-    super.options, {
+    super.options,
+    super.title, {
     this.width,
     this.height,
     this.fit,
@@ -101,7 +105,8 @@ class SvgOptionBuilder extends OptionBuilder<String> {
   final BlendMode? blendMode;
 
   SvgOptionBuilder(
-    super.options, {
+    super.options,
+    super.title, {
     this.width,
     this.height,
     this.color,

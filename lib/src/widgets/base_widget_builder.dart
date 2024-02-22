@@ -6,29 +6,33 @@ class BaseWidgetBuilder<T> extends StatelessWidget {
   const BaseWidgetBuilder({
     super.key,
     required this.items,
-    required this.optionBuilder,
+    required this.optionBuilders,
   });
 
   final List<IconValue<T>> items;
-  final OptionBuilder<T> optionBuilder;
+  final List<OptionBuilder<T>> optionBuilders;
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int crossAxisCount = screenWidth < 600 ? 2 : 4;
-    double itemWidth = (screenWidth / crossAxisCount) - 16;
-
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: itemWidth,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 1,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) => optionBuilder.widgetBuilder(
-        context,
-        items[index],
+    return Wrap(
+      alignment: WrapAlignment.spaceAround,
+      children: List.generate(
+        optionBuilders.length,
+        (optionIndex) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            optionBuilders[optionIndex].title,
+            Wrap(
+              children: List.generate(
+                optionBuilders[optionIndex].options.length,
+                (index) => optionBuilders[optionIndex].widgetBuilder(
+                  context,
+                  optionBuilders[optionIndex].options[index],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
