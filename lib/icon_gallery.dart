@@ -12,10 +12,10 @@ import 'package:icon_gallery/builders/option_builder.dart';
 import 'package:icon_gallery/builders/svg_builder.dart';
 import 'package:icon_gallery/models/icon_value.dart';
 
-class ImageGallery extends StatelessWidget {
-  final List<IconValue<dynamic>> items;
-  final OptionBuilder<dynamic> builder;
-
+class ImageGallery<T extends Object> extends StatelessWidget {
+  final List<IconValue<T>> items;
+  final OptionBuilder<T> builder;
+  
   const ImageGallery._({Key? key, required this.items, required this.builder})
       : super(key: key);
 
@@ -33,7 +33,7 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery svg(List<IconValue<String>> items,
+  static ImageGallery<String> svg(List<IconValue<String>> items,
       {double? width,
       double? height,
       BoxFit fit = BoxFit.contain,
@@ -45,7 +45,7 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery image(List<IconValue<String>> items,
+  static ImageGallery<String> image(List<IconValue<String>> items,
       {double? width,
       double? height,
       BoxFit fit = BoxFit.contain,
@@ -57,7 +57,7 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery file(List<IconValue<File>> items,
+  static ImageGallery<File> file(List<IconValue<File>> items,
       {double? width, double? height, BoxFit fit = BoxFit.contain}) {
     return ImageGallery._(
       items: items,
@@ -65,7 +65,7 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery memory(List<IconValue<Uint8List>> items,
+  static ImageGallery<Uint8List> memory(List<IconValue<Uint8List>> items,
       {double? width, double? height, BoxFit fit = BoxFit.contain}) {
     return ImageGallery._(
       items: items,
@@ -74,7 +74,7 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery iconData(List<IconValue<IconData>> items,
+  static ImageGallery<IconData> iconData(List<IconValue<IconData>> items,
       {double? size, Color? color, BoxFit fit = BoxFit.contain}) {
     return ImageGallery._(
       items: items,
@@ -86,8 +86,8 @@ class ImageGallery extends StatelessWidget {
     );
   }
 
-  static ImageGallery custom(
-      List<IconValue<dynamic>> items, OptionBuilder<dynamic> builder) {
+  static ImageGallery<Object> custom(
+      List<IconValue<Object>> items, OptionBuilder<Object> builder) {
     return ImageGallery._(items: items, builder: builder);
   }
 
