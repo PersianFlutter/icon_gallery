@@ -21,13 +21,17 @@ class BaseWidgetBuilder<T> extends StatelessWidget {
         (optionIndex) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            optionBuilders[optionIndex].title,
+            if (optionBuilders[optionIndex].title != null) // Conditional check
+              optionBuilders[optionIndex].title!,
             Wrap(
               children: List.generate(
                 optionBuilders[optionIndex].options.length,
-                (index) => optionBuilders[optionIndex].widgetBuilder(
-                  context,
-                  optionBuilders[optionIndex].options[index],
+                (index) => Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                  child: optionBuilders[optionIndex].widgetBuilder(
+                    context,
+                    optionBuilders[optionIndex].options[index],
+                  ),
                 ),
               ),
             ),

@@ -12,10 +12,10 @@ class IconValue<T> {
 }
 
 abstract class OptionBuilder<T> {
-  const OptionBuilder(this.options, this.title);
+  const OptionBuilder(this.options, [this.title]);
 
   final List<IconValue<T>> options;
-  final Widget title;
+  final Widget? title;
 
   String nameBuilder(IconValue<T> value) => value.name;
 
