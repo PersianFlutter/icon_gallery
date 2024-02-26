@@ -29,6 +29,9 @@ class IconGalleryTemp<T> extends StatelessWidget {
     required List<IconValue<T>> items,
     this.selectedItem,
     this.onItemSelected,
+    this.crossAxisCount = 10,
+    this.crossAxisSpacing = 0,
+    this.mainAxisSpacing = 0,
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
   }) : _items = items {
@@ -42,6 +45,18 @@ class IconGalleryTemp<T> extends StatelessWidget {
   final List<IconValue<T>> _items;
   final T? selectedItem;
   final ValueChanged<T>? onItemSelected;
+
+  /// `crossAxisCount`: Number of items displayed across the grid.
+  /// For vertical grids, it's columns; for horizontal, rows.
+  final int crossAxisCount;
+
+  /// `crossAxisSpacing`: Horizontal space between items in a vertical grid,
+  /// and vertical space in a horizontal grid.
+  final double crossAxisSpacing;
+
+  /// `mainAxisSpacing`: Space between items along the grid's scrolling direction.
+  final double mainAxisSpacing;
+
   late final GalleryItemWidgetBuilder<T>? _widgetBuilder;
   late final GalleryFilterItemBuilder<T> itemFilter;
 
@@ -57,8 +72,19 @@ class IconGalleryTemp<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(mahmoud): implement the gallery widget
-    throw UnimplementedError();
+    return GridView.builder(
+      padding: const EdgeInsets.all(10),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: crossAxisSpacing,
+        mainAxisSpacing: mainAxisSpacing,
+      ),
+      itemCount: _items.length,
+      itemBuilder: (context, index) => _widgetBuilder!(
+        context,
+        _items[index],
+      ),
+    );
   }
 }
 
