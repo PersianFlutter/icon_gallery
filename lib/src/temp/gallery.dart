@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 typedef GalleryFilterItemBuilder<T> = List<IconValue<T>> Function(
   List<IconValue<T>> items,
@@ -64,10 +65,17 @@ class IconGalleryTemp<T> extends StatelessWidget {
 
 Widget widgetBuilderFactoryExample<T>(
     BuildContext context, IconValue<T> value) {
-  return switch (T.runtimeType) {
+  return switch (value.value.runtimeType) {
     IconData => Icon(value.value as IconData),
-    AssetBundleImageProvider =>
-      Image(image: value.value as AssetBundleImageProvider),
+    AssetImage => Image(image: value.value as AssetImage),
+    MemoryImage => Image(image: value.value as MemoryImage),
+    FileImage => Image(image: value.value as FileImage),
+    NetworkImage => Image(image: value.value as NetworkImage),
+    SvgAssetLoader => SvgPicture(value.value as SvgAssetLoader),
+    SvgStringLoader => SvgPicture(value.value as SvgStringLoader),
+    SvgNetworkLoader => SvgPicture(value.value as SvgNetworkLoader),
+    SvgFileLoader => SvgPicture(value.value as SvgFileLoader),
+    SvgBytesLoader => SvgPicture(value.value as SvgBytesLoader),
     _ => Container(),
   };
 }
