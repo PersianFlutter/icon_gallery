@@ -28,12 +28,15 @@ class IconGalleryTemp<T> extends StatefulWidget {
   IconGalleryTemp({
     super.key,
     required List<IconValue<T>> items,
+    this.titleWidget,
     this.searchBar,
     this.searchBarController,
     this.searchBarBorderRadius = 12,
     this.maxCrossAxisExtent = 200,
     this.gridPadding = EdgeInsets.zero,
     this.baseWidgetPadding = EdgeInsets.zero,
+    this.itemColor = Colors.black,
+    this.itemSize = 20,
     this.onChanged,
     this.selectedItem,
     this.onItemSelected,
@@ -46,8 +49,8 @@ class IconGalleryTemp<T> extends StatefulWidget {
     itemFilter = itemFilterBuilder ?? defaultFilterItemBuilder;
 
     // TODO(alireza): check if the <T> is not a common type we should throw an error to tell the user to provide the [widgetBuilder] function
-    _widgetBuilder = itemWidgetBuilder ??
-        widgetBuilderFactoryExample; // ?? factoryDesignPatter to make the default widget builder;
+    _widgetBuilder =
+        itemWidgetBuilder; // ?? factoryDesignPatter to make the default widget builder;
   }
 
   final List<IconValue<T>> _items;
@@ -59,6 +62,7 @@ class IconGalleryTemp<T> extends StatefulWidget {
   late final GalleryItemWidgetBuilder<T>? _widgetBuilder;
   late final GalleryFilterItemBuilder<T> itemFilter;
 
+  final Widget? titleWidget;
   final Widget? searchBar;
   final TextEditingController? searchBarController;
   final double searchBarBorderRadius;
@@ -67,6 +71,9 @@ class IconGalleryTemp<T> extends StatefulWidget {
   final double maxCrossAxisExtent;
   final EdgeInsets gridPadding;
   final EdgeInsets baseWidgetPadding;
+
+  final double itemSize;
+  final Color itemColor;
 
   static List<IconValue<T>> defaultFilterItemBuilder<T>(
       List<IconValue<T>> items, String filter) {
@@ -90,6 +97,9 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
   @override
   void initState() {
     super.initState();
+
+    if (widget._widgetBuilder == null) {}
+
     if (widget.searchBarController != null) {
       _searchBarController = widget.searchBarController!;
       _filteredItems = widget._items;
@@ -119,7 +129,14 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
   List<Widget> _childrenBuilder() {
     List<IconValue<T>> localItems = _filteredItems ?? widget._items;
 
-    return localItems.map((e) => widget._widgetBuilder!(context, e)).toList();
+    if (widget._widgetBuilder == null) {
+      return localItems
+          .map((e) => widgetBuilderFactoryExample(context, e,
+              color: widget.itemColor, iconSize: widget.itemSize))
+          .toList();
+    } else {
+      return localItems.map((e) => widget._widgetBuilder!(context, e)).toList();
+    }
   }
 
   @override
@@ -127,7 +144,14 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
     return Padding(
       padding: widget.baseWidgetPadding,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          widget.titleWidget ??
+              Text(
+                'Icons',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+          const SizedBox(height: 20),
           widget.searchBar ??
               TextField(
                 controller: widget.searchBarController,
@@ -154,21 +178,71 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
       ),
     );
   }
-}
 
-Widget widgetBuilderFactoryExample<T>(
-    BuildContext context, IconValue<T> value) {
-  return switch (value.value.runtimeType) {
-    IconData => Icon(value.value as IconData),
-    AssetImage => Image(image: value.value as AssetImage),
-    MemoryImage => Image(image: value.value as MemoryImage),
-    FileImage => Image(image: value.value as FileImage),
-    NetworkImage => Image(image: value.value as NetworkImage),
-    SvgAssetLoader => SvgPicture(value.value as SvgAssetLoader),
-    SvgStringLoader => SvgPicture(value.value as SvgStringLoader),
-    SvgNetworkLoader => SvgPicture(value.value as SvgNetworkLoader),
-    SvgFileLoader => SvgPicture(value.value as SvgFileLoader),
-    SvgBytesLoader => SvgPicture(value.value as SvgBytesLoader),
-    _ => Container(),
-  };
+  Widget widgetBuilderFactoryExample(
+    BuildContext context,
+    IconValue<T> value, {
+    Color? color,
+    double? iconSize,
+    width,
+    height,
+  }) {
+    return switch (value.value.runtimeType) {
+      IconData => Icon(
+          value.value as IconData,
+          color: color,
+          size: iconSize,
+        ),
+      AssetImage => Image(
+          image: value.value as AssetImage,
+          width: width,
+          height: height,
+        ),
+      MemoryImage => Image(
+          image: value.value as MemoryImage,
+          width: width,
+          height: height,
+        ),
+      FileImage => Image(
+          image: value.value as FileImage,
+          width: width,
+          height: height,
+        ),
+      NetworkImage => Image(
+          image: value.value as NetworkImage,
+          width: width,
+          height: height,
+        ),
+      SvgAssetLoader => SvgPicture(
+          value.value as SvgAssetLoader,
+          width: width,
+          height: height,
+        ),
+      SvgStringLoader => SvgPicture(
+          value.value as SvgStringLoader,
+          width: width,
+          height: height,
+        ),
+      SvgNetworkLoader => SvgPicture(
+          value.value as SvgNetworkLoader,
+          width: width,
+          height: height,
+        ),
+      SvgFileLoader => SvgPicture(
+          value.value as SvgFileLoader,
+          width: width,
+          height: height,
+        ),
+      SvgBytesLoader => SvgPicture(
+          value.value as SvgBytesLoader,
+          width: width,
+          height: height,
+        ),
+      _ => Container(
+          color: color,
+          width: width,
+          height: height,
+        ),
+    };
+  }
 }
