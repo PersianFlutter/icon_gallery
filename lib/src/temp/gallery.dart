@@ -47,7 +47,6 @@ class IconGallery<T> extends StatefulWidget {
     this.filterOnChanged,
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
-    required this.itemFilter,
     this.selectedItemColor,
     this.backgroundColor,
     this.foregroundColor,
