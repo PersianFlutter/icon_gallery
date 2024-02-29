@@ -91,6 +91,7 @@ class IconGalleryTemp<T> extends StatefulWidget {
 }
 
 class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
+  GalleryItemWidgetBuilder<T>? _widgetBuilder;
   TextEditingController? _searchBarController;
   List<IconValue<T>>? _filteredItems;
 
@@ -98,7 +99,9 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
   void initState() {
     super.initState();
 
-    if (widget._widgetBuilder == null) {}
+    _widgetBuilder = widget._widgetBuilder ??
+        (context, item) => widgetBuilderFactoryExample(context, item,
+            color: widget.itemColor, iconSize: widget.itemSize);
 
     if (widget.searchBarController != null) {
       _searchBarController = widget.searchBarController!;
@@ -129,14 +132,7 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
   List<Widget> _childrenBuilder() {
     List<IconValue<T>> localItems = _filteredItems ?? widget._items;
 
-    if (widget._widgetBuilder == null) {
-      return localItems
-          .map((e) => widgetBuilderFactoryExample(context, e,
-              color: widget.itemColor, iconSize: widget.itemSize))
-          .toList();
-    } else {
-      return localItems.map((e) => widget._widgetBuilder!(context, e)).toList();
-    }
+    return localItems.map((e) => _widgetBuilder!(context, e)).toList();
   }
 
   @override
