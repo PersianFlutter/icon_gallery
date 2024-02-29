@@ -24,13 +24,16 @@ class IconValue<T> {
   });
 }
 
-class IconGalleryTemp<T> extends StatelessWidget {
+class IconGalleryTemp<T> extends StatefulWidget {
   IconGalleryTemp({
     super.key,
     required List<IconValue<T>> items,
     this.searchBar,
     this.searchBarController,
     this.searchBarBorderRadius = 12,
+    this.maxCrossAxisExtent = 200,
+    this.gridPadding = EdgeInsets.zero,
+    this.baseWidgetPadding = EdgeInsets.zero,
     this.onChanged,
     this.selectedItem,
     this.onItemSelected,
@@ -38,6 +41,8 @@ class IconGalleryTemp<T> extends StatelessWidget {
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
   }) : _items = items {
+    assert(searchBar != null || searchBarController != null,
+        'You must pass either a searchBar widget or a searchBarController.');
     itemFilter = itemFilterBuilder ?? defaultFilterItemBuilder;
 
     // TODO(alireza): check if the <T> is not a common type we should throw an error to tell the user to provide the [widgetBuilder] function
@@ -55,13 +60,13 @@ class IconGalleryTemp<T> extends StatelessWidget {
   late final GalleryFilterItemBuilder<T> itemFilter;
 
   final Widget? searchBar;
-
-  // search bar styles
   final TextEditingController? searchBarController;
   final double searchBarBorderRadius;
   final ValueChanged<String>? onChanged;
 
-  // TODO(mahmoud): add other styling options like Color, Size, etc.
+  final double maxCrossAxisExtent;
+  final EdgeInsets gridPadding;
+  final EdgeInsets baseWidgetPadding;
 
   static List<IconValue<T>> defaultFilterItemBuilder<T>(
       List<IconValue<T>> items, String filter) {
@@ -75,42 +80,78 @@ class IconGalleryTemp<T> extends StatelessWidget {
   }
 
   @override
+  State<IconGalleryTemp<T>> createState() => _IconGalleryTempState<T>();
+}
+
+class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
+  TextEditingController? _searchBarController;
+  List<IconValue<T>>? _filteredItems;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.searchBarController != null) {
+      _searchBarController = widget.searchBarController!;
+      _filteredItems = widget._items;
+
+      _searchBarController?.addListener(_filterItems);
+    }
+  }
+
+  void _filterItems() {
+    final filter = _searchBarController?.text.toLowerCase();
+    setState(() {
+      _filteredItems = widget._items
+          .where((item) => item.name.toLowerCase().contains(filter!))
+          .toList();
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchBarController
+      ?..removeListener(_filterItems)
+      ..dispose();
+
+    super.dispose();
+  }
+
+  List<Widget> _childrenBuilder() {
+    List<IconValue<T>> localItems = _filteredItems ?? widget._items;
+
+    return localItems.map((e) => widget._widgetBuilder!(context, e)).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        searchBar ??
-            TextField(
-              controller: searchBarController,
-              onChanged: filterOnChanged,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(
-                      searchBarBorderRadius,
+    return Padding(
+      padding: widget.baseWidgetPadding,
+      child: Column(
+        children: [
+          widget.searchBar ??
+              TextField(
+                controller: widget.searchBarController,
+                onChanged: widget.filterOnChanged,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(widget.searchBarBorderRadius),
                     ),
                   ),
-                ),
-                hintText: 'Type for filter',
-                prefixIcon: const Icon(
-                  Icons.search,
+                  hintText: 'Type for filter',
+                  prefixIcon: const Icon(Icons.search),
                 ),
               ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: GridView.extent(
+              padding: widget.gridPadding,
+              maxCrossAxisExtent: widget.maxCrossAxisExtent,
+              children: _childrenBuilder(),
             ),
-        const SizedBox(
-          height: 20,
-        ),
-        Expanded(
-          child: GridView.extent(
-            padding: EdgeInsets.zero,
-            maxCrossAxisExtent: 30,
-            children: _items
-                .map(
-                  (e) => _widgetBuilder!(context, e),
-                )
-                .toList(),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
