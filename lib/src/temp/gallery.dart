@@ -3,6 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+typedef SearchFieldBuilder = Widget Function(
+  BuildContext context,
+  TextEditingController controller,
+  FocusNode? focusNode,
+);
+
 typedef GalleryFilterItemBuilder<T> = List<IconValue<T>> Function(
   List<IconValue<T>> items,
   String filter,
@@ -29,23 +35,19 @@ class IconGalleryTemp<T> extends StatefulWidget {
     super.key,
     required List<IconValue<T>> items,
     this.titleWidget,
-    this.searchBar,
+    this.searchBarBuilder,
     this.searchBarController,
-    this.searchBarBorderRadius = 12,
     this.maxCrossAxisExtent = 200,
     this.gridPadding = EdgeInsets.zero,
     this.baseWidgetPadding = EdgeInsets.zero,
     this.itemColor = Colors.black,
     this.itemSize = 20,
-    this.onChanged,
     this.selectedItem,
     this.onItemSelected,
     this.filterOnChanged,
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
   }) : _items = items {
-    assert(searchBar != null || searchBarController != null,
-        'You must pass either a searchBar widget or a searchBarController.');
     itemFilter = itemFilterBuilder ?? defaultFilterItemBuilder;
 
     // TODO(alireza): check if the <T> is not a common type we should throw an error to tell the user to provide the [widgetBuilder] function
@@ -63,10 +65,9 @@ class IconGalleryTemp<T> extends StatefulWidget {
   late final GalleryFilterItemBuilder<T> itemFilter;
 
   final Widget? titleWidget;
-  final Widget? searchBar;
+
+  final SearchFieldBuilder? searchBarBuilder;
   final TextEditingController? searchBarController;
-  final double searchBarBorderRadius;
-  final ValueChanged<String>? onChanged;
 
   final double maxCrossAxisExtent;
   final EdgeInsets gridPadding;
@@ -91,42 +92,70 @@ class IconGalleryTemp<T> extends StatefulWidget {
 }
 
 class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
+  late TextEditingController _searchBarController;
+
   GalleryItemWidgetBuilder<T>? _widgetBuilder;
-  TextEditingController? _searchBarController;
   List<IconValue<T>>? _filteredItems;
 
   @override
   void initState() {
     super.initState();
+    _searchBarController =
+        widget.searchBarController ?? TextEditingController();
 
     _widgetBuilder = widget._widgetBuilder ??
         (context, item) => widgetBuilderFactoryExample(context, item,
             color: widget.itemColor, iconSize: widget.itemSize);
 
-    if (widget.searchBarController != null) {
-      _searchBarController = widget.searchBarController!;
-      _filteredItems = widget._items;
+    _filteredItems = widget._items;
 
-      _searchBarController?.addListener(_filterItems);
-    }
+    _searchBarController.addListener(_onSearchFieldChanged);
   }
 
-  void _filterItems() {
-    final filter = _searchBarController?.text.toLowerCase();
-    setState(() {
-      _filteredItems = widget._items
-          .where((item) => item.name.toLowerCase().contains(filter!))
-          .toList();
-    });
+  @override
+  void didUpdateWidget(covariant IconGalleryTemp<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateTextEditingController(
+      oldWidget.searchBarController,
+      widget.searchBarController,
+    );
   }
 
   @override
   void dispose() {
-    _searchBarController
-      ?..removeListener(_filterItems)
-      ..dispose();
+    _dismissController(_searchBarController);
 
     super.dispose();
+  }
+
+  void _dismissController(TextEditingController controller) {
+    controller.removeListener(_onSearchFieldChanged);
+
+    /// If the controller is provided by the user we are not responsible for disposing it
+    /// otherwise if we created it we should dispose it
+    if (widget.searchBarController == null) {
+      controller.dispose();
+    }
+  }
+
+  void _updateTextEditingController(
+      TextEditingController? old, TextEditingController? current) {
+    if ((old == null && current == null) || old == current) {
+      return;
+    }
+    if (old == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController.dispose();
+      _searchBarController = current!;
+    } else if (current == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = TextEditingController();
+    } else {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = current;
+    }
+    _searchBarController.addListener(_onSearchFieldChanged);
   }
 
   List<Widget> _childrenBuilder() {
@@ -148,18 +177,21 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
           const SizedBox(height: 20),
-          widget.searchBar ??
+          widget.searchBarBuilder?.call(
+                context,
+                _searchBarController,
+                null,
+              ) ??
               TextField(
-                controller: widget.searchBarController,
-                onChanged: widget.filterOnChanged,
-                decoration: InputDecoration(
+                controller: _searchBarController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(widget.searchBarBorderRadius),
+                      Radius.circular(12),
                     ),
                   ),
                   hintText: 'Type for filter',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search),
                 ),
               ),
           const SizedBox(height: 20),
@@ -173,6 +205,15 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
         ],
       ),
     );
+  }
+
+  void _onSearchFieldChanged() {
+    final filter = _searchBarController.text.toLowerCase();
+    setState(() {
+      _filteredItems = widget._items
+          .where((item) => item.name.toLowerCase().contains(filter))
+          .toList();
+    });
   }
 
   Widget widgetBuilderFactoryExample(
