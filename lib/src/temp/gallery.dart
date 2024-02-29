@@ -47,6 +47,10 @@ class IconGallery<T> extends StatefulWidget {
     this.filterOnChanged,
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
+    required this.itemFilter,
+    this.selectedItemColor,
+    this.backgroundColor,
+    this.foregroundColor,
   }) : _items = items {
     itemFilter = itemFilterBuilder ?? defaultFilterItemBuilder;
 
@@ -75,6 +79,10 @@ class IconGallery<T> extends StatefulWidget {
 
   final double itemSize;
   final Color itemColor;
+  final Color? selectedItemColor;
+
+  final Color? backgroundColor;
+  final Color? foregroundColor;
 
   static List<IconValue<T>> defaultFilterItemBuilder<T>(
       List<IconValue<T>> items, String filter) {
