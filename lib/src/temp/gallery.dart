@@ -27,11 +27,13 @@ class IconGalleryTemp<T> extends StatelessWidget {
   IconGalleryTemp({
     super.key,
     required List<IconValue<T>> items,
+    this.searchBar,
+    this.searchBarController,
+    this.searchBarBorderRadius = 12,
+    this.onChanged,
     this.selectedItem,
     this.onItemSelected,
-    this.crossAxisCount = 10,
-    this.crossAxisSpacing = 0,
-    this.mainAxisSpacing = 0,
+    this.filterOnChanged,
     GalleryFilterItemBuilder<T>? itemFilterBuilder,
     GalleryItemWidgetBuilder<T>? itemWidgetBuilder,
   }) : _items = items {
@@ -46,44 +48,68 @@ class IconGalleryTemp<T> extends StatelessWidget {
   final T? selectedItem;
   final ValueChanged<T>? onItemSelected;
 
-  /// `crossAxisCount`: Number of items displayed across the grid.
-  /// For vertical grids, it's columns; for horizontal, rows.
-  final int crossAxisCount;
-
-  /// `crossAxisSpacing`: Horizontal space between items in a vertical grid,
-  /// and vertical space in a horizontal grid.
-  final double crossAxisSpacing;
-
-  /// `mainAxisSpacing`: Space between items along the grid's scrolling direction.
-  final double mainAxisSpacing;
+  final ValueChanged<String>? filterOnChanged;
 
   late final GalleryItemWidgetBuilder<T>? _widgetBuilder;
   late final GalleryFilterItemBuilder<T> itemFilter;
+
+  final Widget? searchBar;
+
+  // search bar styles
+  final TextEditingController? searchBarController;
+  final double searchBarBorderRadius;
+  final ValueChanged<String>? onChanged;
 
   // TODO(mahmoud): add other styling options like Color, Size, etc.
 
   static List<IconValue<T>> defaultFilterItemBuilder<T>(
       List<IconValue<T>> items, String filter) {
     return items
-        .where((element) =>
-            element.name.toLowerCase().contains(filter.toLowerCase()))
+        .where(
+          (element) => element.name.toLowerCase().contains(
+                filter.toLowerCase(),
+              ),
+        )
         .toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(10),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: crossAxisSpacing,
-        mainAxisSpacing: mainAxisSpacing,
-      ),
-      itemCount: _items.length,
-      itemBuilder: (context, index) => _widgetBuilder!(
-        context,
-        _items[index],
-      ),
+    return Column(
+      children: [
+        searchBar ??
+            TextField(
+              controller: searchBarController,
+              onChanged: filterOnChanged,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      searchBarBorderRadius,
+                    ),
+                  ),
+                ),
+                hintText: 'Type for filter',
+                prefixIcon: const Icon(
+                  Icons.search,
+                ),
+              ),
+            ),
+        const SizedBox(
+          height: 20,
+        ),
+        Expanded(
+          child: GridView.extent(
+            padding: EdgeInsets.zero,
+            maxCrossAxisExtent: 30,
+            children: _items
+                .map(
+                  (e) => _widgetBuilder!(context, e),
+                )
+                .toList(),
+          ),
+        ),
+      ],
     );
   }
 }
