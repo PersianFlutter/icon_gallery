@@ -85,15 +85,14 @@ class IconGallery<T> extends StatefulWidget {
   final Color? foregroundColor;
 
   static List<IconValue<T>> defaultFilterItemBuilder<T>(
-      List<IconValue<T>> items, String filter) {
-    return items
-        .where(
-          (element) => element.name.toLowerCase().contains(
-                filter.toLowerCase(),
-              ),
-        )
-        .toList();
-  }
+    List<IconValue<T>> items,
+    String filter,
+  ) =>
+      items
+          .where(
+            (item) => item.name.toLowerCase().contains(filter.toLowerCase()),
+          )
+          .toList();
 
   @override
   State<IconGallery<T>> createState() => _IconGalleryState<T>();
@@ -110,14 +109,12 @@ class _IconGalleryState<T> extends State<IconGallery<T>> {
     super.initState();
     _searchBarController =
         widget.searchBarController ?? TextEditingController();
-
-    _widgetBuilder = widget._widgetBuilder ??
-        (context, item) => widgetBuilderFactoryExample(context, item,
-            color: widget.itemColor, iconSize: widget.itemSize);
-
-    _filteredItems = widget._items;
-
     _searchBarController.addListener(_onSearchFieldChanged);
+
+    _widgetBuilder = widget._widgetBuilder ?? widgetBuilderFactoryExample;
+
+    _filteredItems =
+        widget.itemFilter(widget._items, _searchBarController.text);
   }
 
   @override
@@ -209,22 +206,21 @@ class _IconGalleryState<T> extends State<IconGallery<T>> {
   }
 
   void _onSearchFieldChanged() {
-    final filter = _searchBarController.text.toLowerCase();
+    final searchValue = _searchBarController.text.toLowerCase();
     setState(() {
-      _filteredItems = widget._items
-          .where((item) => item.name.toLowerCase().contains(filter))
-          .toList();
+      _filteredItems = widget.itemFilter(widget._items, searchValue);
     });
   }
 
   Widget widgetBuilderFactoryExample(
     BuildContext context,
-    IconValue<T> value, {
-    Color? color,
-    double? iconSize,
-    width,
-    height,
-  }) {
+    IconValue<T> value,
+  ) {
+    final color = widget.itemColor;
+    final iconSize = widget.itemSize;
+    final width = iconSize;
+    final height = iconSize;
+
     return switch (value.value.runtimeType) {
       IconData => Icon(
           value.value as IconData,
