@@ -17,7 +17,7 @@ Future<IconValue<T>?> showIconGalleryDialog<T>({
     builder: (context) {
       return AlertDialog(
         title: const Text('Select an Icon'),
-        content: IconGalleryTemp<T>(
+        content: IconGallery<T>(
           items: items,
           selectedItem: selectedItem,
           // TODO(mahmoud): I'm not sure that we have to pop the navigator here or not

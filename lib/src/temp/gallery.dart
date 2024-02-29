@@ -30,8 +30,8 @@ class IconValue<T> {
   });
 }
 
-class IconGalleryTemp<T> extends StatefulWidget {
-  IconGalleryTemp({
+class IconGallery<T> extends StatefulWidget {
+  IconGallery({
     super.key,
     required List<IconValue<T>> items,
     this.titleWidget,
@@ -88,10 +88,10 @@ class IconGalleryTemp<T> extends StatefulWidget {
   }
 
   @override
-  State<IconGalleryTemp<T>> createState() => _IconGalleryTempState<T>();
+  State<IconGallery<T>> createState() => _IconGalleryState<T>();
 }
 
-class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
+class _IconGalleryState<T> extends State<IconGallery<T>> {
   late TextEditingController _searchBarController;
 
   GalleryItemWidgetBuilder<T>? _widgetBuilder;
@@ -113,7 +113,7 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
   }
 
   @override
-  void didUpdateWidget(covariant IconGalleryTemp<T> oldWidget) {
+  void didUpdateWidget(covariant IconGallery<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     _updateTextEditingController(
@@ -127,6 +127,42 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
     _dismissController(_searchBarController);
 
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final titleWidget = widget.titleWidget ??
+        Text(
+          'Icons',
+          style: Theme.of(context).textTheme.headlineLarge,
+        );
+
+    final searchField = widget.searchBarBuilder?.call(
+          context,
+          _searchBarController,
+          null,
+        ) ??
+        DefaultSearchField(controller: _searchBarController);
+
+    final iconsGrid = GridView.extent(
+      padding: widget.gridPadding,
+      maxCrossAxisExtent: widget.maxCrossAxisExtent,
+      children: _childrenBuilder(),
+    );
+
+    return Padding(
+      padding: widget.baseWidgetPadding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          titleWidget,
+          const SizedBox(height: 20),
+          searchField,
+          const SizedBox(height: 20),
+          Expanded(child: iconsGrid),
+        ],
+      ),
+    );
   }
 
   void _dismissController(TextEditingController controller) {
@@ -162,49 +198,6 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
     List<IconValue<T>> localItems = _filteredItems ?? widget._items;
 
     return localItems.map((e) => _widgetBuilder!(context, e)).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: widget.baseWidgetPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          widget.titleWidget ??
-              Text(
-                'Icons',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-          const SizedBox(height: 20),
-          widget.searchBarBuilder?.call(
-                context,
-                _searchBarController,
-                null,
-              ) ??
-              TextField(
-                controller: _searchBarController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(12),
-                    ),
-                  ),
-                  hintText: 'Type for filter',
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: GridView.extent(
-              padding: widget.gridPadding,
-              maxCrossAxisExtent: widget.maxCrossAxisExtent,
-              children: _childrenBuilder(),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   void _onSearchFieldChanged() {
@@ -281,5 +274,30 @@ class _IconGalleryTempState<T> extends State<IconGalleryTemp<T>> {
           height: height,
         ),
     };
+  }
+}
+
+class DefaultSearchField extends StatelessWidget {
+  const DefaultSearchField({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        ),
+        hintText: 'Type for filter',
+        prefixIcon: Icon(Icons.search),
+      ),
+    );
   }
 }
