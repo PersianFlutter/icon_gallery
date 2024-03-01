@@ -96,23 +96,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     iconList3 = [
       SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/calc_back_icon.svg'),
+          name: 'calc back', svgPath: 'assets/images/calc_back_icon.svg'),
       SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/calendar_icon.svg'),
+          name: 'calc back', svgPath: 'assets/images/calendar_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/check_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/circle_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/cross_icon.svg'),
       SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/check_icon.svg'),
-      SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/circle_icon.svg'),
-      SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/cross_icon.svg'),
-      SvgIconValue(
-          name: 'calc back',
-          svgPath: 'assets/images/income_type_icon.svg'),
+          name: 'calc back', svgPath: 'assets/images/income_type_icon.svg'),
     ];
 
     sectionItem1 = SectionItem(
@@ -169,7 +160,41 @@ class _MyHomePageState extends State<MyHomePage> {
                       selectedIcon = selectedIconValue!.name;
                     });
                   }),
-            )
+            ),
+            TextButton(
+                onPressed: () {
+                  IconPickerWidget.showAsDialog(
+                    context: context,
+                    selectedIcon: selectedIconValue,
+                    tabs: [tabItem1, tabItem2],
+                    onIconSelected: (icon) {
+                      Navigator.pop(context);
+                      setState(() {
+                        selectedIconValue = icon;
+                        debugPrint('selected icon is $icon');
+                        selectedIcon = selectedIconValue!.name;
+                      });
+                    },
+                  );
+                },
+                child: const Text('Show As Dialog')),
+            TextButton(
+                onPressed: () {
+                  IconPickerWidget.showAsBottomSheet(
+                    context: context,
+                    selectedIcon: selectedIconValue,
+                    tabs: [tabItem1, tabItem2],
+                    onIconSelected: (icon) {
+                      Navigator.pop(context);
+                      setState(() {
+                        selectedIconValue = icon;
+                        debugPrint('selected icon is $icon');
+                        selectedIcon = selectedIconValue!.name;
+                      });
+                    },
+                  );
+                },
+                child: const Text('Show As BottomSheet')),
           ],
         ),
       ),

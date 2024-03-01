@@ -18,6 +18,45 @@ class IconPickerWidget extends StatefulWidget {
 
   @override
   State<IconPickerWidget> createState() => _IconPickerWidgetState();
+
+  static Future<void> showAsDialog({
+    required BuildContext context,
+    required List<TabItem> tabs,
+    IconValue? selectedIcon,
+    required OnIconSelected onIconSelected,
+  }) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: IconPickerWidget(
+            tabs: tabs,
+            selectedIcon: selectedIcon,
+            onIconSelected: onIconSelected,
+          ),
+        );
+      },
+    );
+  }
+
+// Helper method to show the widget as a bottom sheet
+  static void showAsBottomSheet({
+    required BuildContext context,
+    required List<TabItem> tabs,
+    IconValue? selectedIcon,
+    required OnIconSelected onIconSelected,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return IconPickerWidget(
+          tabs: tabs,
+          selectedIcon: selectedIcon,
+          onIconSelected: onIconSelected,
+        );
+      },
+    );
+  }
 }
 
 class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
@@ -34,6 +73,7 @@ class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
     super.dispose();
   }
 
+  // Helper method to show the widget as a dialog
   void _onTabTapped(int index) {
     _pageController.animateToPage(
       index,
