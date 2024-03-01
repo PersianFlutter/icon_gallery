@@ -1,6 +1,12 @@
-class IconValue<T> {
-  final T value;
-  final String name;
+import 'package:flutter/material.dart';
 
-  IconValue(this.value, this.name);
+abstract class IconValue<T> {
+  T get value;
+  String get name;
+  Widget build(
+    BuildContext context, {
+    double size = 24,
+    Color? color,
+    BoxFit? fit,
+  });
 }

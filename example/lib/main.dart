@@ -57,30 +57,85 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<IconValue<IconData>> iconDataList;
+  late List<IconDataIconValue> iconList1;
+  late List<IconDataIconValue> iconList2;
+/*   late List<IconValue> iconList3;
+ */
+  late SectionItem<IconData> sectionItem1;
+  late SectionItem<IconData> sectionItem2;
+  late TabItem<IconData> tabItem1;
+  /* late SectionItem sectionItem3;
+
+ */
+  late TabItem<IconData> tabItem2;
   @override
   void initState() {
-    iconDataList = [
-      IconValue(Icons.ac_unit, 'Ac Unit'),
-      IconValue(Icons.access_alarm, 'Access Alarm'),
-      IconValue(Icons.access_alarms, 'Access Alarms'),
-      IconValue(Icons.access_time, 'Access Time'),
-      IconValue(Icons.accessibility, 'Accessibility'),
-      IconValue(Icons.accessibility_new, 'Accessibility New'),
-      IconValue(Icons.accessible, 'Accessible'),
-      IconValue(Icons.accessible_forward, 'Accessible Forward'),
-      IconValue(Icons.account_balance, 'Account Balance'),
-      IconValue(Icons.account_balance_wallet, 'Account Balance Wallet'),
-      IconValue(Icons.account_box, 'Account Box'),
-      IconValue(Icons.account_circle, 'Account Circle'),
-      IconValue(Icons.account_tree, 'Account Tree'),
-      IconValue(Icons.ad_units, 'Ad Units'),
-      IconValue(Icons.adb, 'Adb'),
-      IconValue(Icons.add, 'Add'),
+    iconList1 = [
+      IconDataIconValue(iconData: Icons.ac_unit, name: 'Ac Unit'),
+      IconDataIconValue(iconData: Icons.access_alarm, name: 'Access Alarm'),
+      IconDataIconValue(iconData: Icons.access_alarms, name: 'Access Alarms'),
+      IconDataIconValue(iconData: Icons.access_time, name: 'Access Time'),
+      IconDataIconValue(iconData: Icons.accessibility, name: 'Accessibility'),
+      IconDataIconValue(
+          iconData: Icons.accessibility_new, name: 'Accessibility New'),
     ];
+    iconList2 = [
+      IconDataIconValue(iconData: Icons.accessible, name: 'Accessible'),
+      IconDataIconValue(
+          iconData: Icons.accessible_forward, name: 'Accessible Forward'),
+      IconDataIconValue(
+          iconData: Icons.account_balance, name: 'Account Balance'),
+      IconDataIconValue(
+          iconData: Icons.account_balance_wallet,
+          name: 'Account Balance Wallet'),
+      IconDataIconValue(iconData: Icons.account_box, name: 'Account Box'),
+      IconDataIconValue(iconData: Icons.account_circle, name: 'Account Circle'),
+      IconDataIconValue(iconData: Icons.account_tree, name: 'Account Tree'),
+      IconDataIconValue(iconData: Icons.ad_units, name: 'Ad Units'),
+      IconDataIconValue(iconData: Icons.adb, name: 'Adb'),
+      IconDataIconValue(iconData: Icons.add, name: 'Add'),
+    ];
+
+    /* iconList3 = [
+      SvgIconValue(
+          name: 'calc back', svgPath: 'assets/images/calc_back_icon.svg'),
+      SvgIconValue(
+          name: 'calc back', svgPath: 'assets/images/calendar_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/check_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/circle_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/cross_icon.svg'),
+      SvgIconValue(name: 'calc back', svgPath: 'assets/images/calc_back.svg'),
+    ];
+ */
+    sectionItem1 = SectionItem<IconData>(
+      title: 'General',
+      icons: iconList1,
+    );
+    sectionItem2 = SectionItem<IconData>(
+      title: 'More',
+      icons: iconList2,
+    );
+    /*  sectionItem3 = SectionItem(
+      title: 'SVG General',
+      icons: iconList3,
+    ); */
+    tabItem1 = TabItem(
+      title: 'Icon Data',
+      sections: [sectionItem1, sectionItem2],
+    );
+    tabItem2 = TabItem(
+      title: 'Icon Test',
+      sections: [sectionItem1],
+    );
+    /* tabItem2 = TabItem(
+      title: 'Svg Data',
+      sections: [sectionItem3],
+    ); */
     super.initState();
   }
 
+  String selectedIcon = '';
+  IconDataIconValue? selectedIconValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,21 +149,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'This is the widget we are testing',
+            Text(
+              'selected Item is :$selectedIcon ',
             ),
-            SizedBox(height: 300, child: ImageGallery.iconData(iconDataList)),
-            TextButton(
-              onPressed: () {
-                ImageGallery.iconData(iconDataList).showAsDialog(context);
-              },
-              child: const Text("show as dialog"),
-            ),
-            TextButton(
-              onPressed: () {
-                ImageGallery.iconData(iconDataList).showAsBottomSheet(context);
-              },
-              child: const Text("show as bottom sheet"),
+            SizedBox(
+              height: 400,
+              child: IconPickerWidget<IconData>(
+                  selectedIcon: selectedIconValue,
+                  tabs: [tabItem1, tabItem2],
+                  onIconSelected: (icon) {
+                    setState(() {
+                      selectedIconValue = icon as IconDataIconValue;
+                      debugPrint('selected icon is $icon');
+                      selectedIcon = selectedIconValue!.name;
+                    });
+                  }),
             )
           ],
         ),
