@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:icon_gallery/icon_gallery.dart';
-import 'package:icon_gallery/models/icon_value.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,15 +58,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late List<IconDataIconValue> iconList1;
   late List<IconDataIconValue> iconList2;
-/*   late List<IconValue> iconList3;
- */
-  late SectionItem<IconData> sectionItem1;
-  late SectionItem<IconData> sectionItem2;
-  late TabItem<IconData> tabItem1;
-  /* late SectionItem sectionItem3;
+  late List<SvgIconValue> iconList3;
 
- */
-  late TabItem<IconData> tabItem2;
+  late SectionItem sectionItem1;
+  late SectionItem sectionItem2;
+  late SectionItem sectionItem3;
+  late TabItem tabItem1;
+
+  late TabItem tabItem2;
   @override
   void initState() {
     iconList1 = [
@@ -96,46 +94,53 @@ class _MyHomePageState extends State<MyHomePage> {
       IconDataIconValue(iconData: Icons.add, name: 'Add'),
     ];
 
-    /* iconList3 = [
+    iconList3 = [
       SvgIconValue(
-          name: 'calc back', svgPath: 'assets/images/calc_back_icon.svg'),
+          name: 'calc back',
+          svgPath: 'assets/images/calc_back_icon.svg'),
       SvgIconValue(
-          name: 'calc back', svgPath: 'assets/images/calendar_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/check_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/circle_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/cross_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/calc_back.svg'),
+          name: 'calc back',
+          svgPath: 'assets/images/calendar_icon.svg'),
+      SvgIconValue(
+          name: 'calc back',
+          svgPath: 'assets/images/check_icon.svg'),
+      SvgIconValue(
+          name: 'calc back',
+          svgPath: 'assets/images/circle_icon.svg'),
+      SvgIconValue(
+          name: 'calc back',
+          svgPath: 'assets/images/cross_icon.svg'),
+      SvgIconValue(
+          name: 'calc back',
+          svgPath: 'assets/images/income_type_icon.svg'),
     ];
- */
-    sectionItem1 = SectionItem<IconData>(
+
+    sectionItem1 = SectionItem(
       title: 'General',
       icons: iconList1,
     );
-    sectionItem2 = SectionItem<IconData>(
+    sectionItem2 = SectionItem(
       title: 'More',
       icons: iconList2,
     );
-    /*  sectionItem3 = SectionItem(
+    sectionItem3 = SectionItem(
       title: 'SVG General',
       icons: iconList3,
-    ); */
+    );
     tabItem1 = TabItem(
       title: 'Icon Data',
       sections: [sectionItem1, sectionItem2],
     );
     tabItem2 = TabItem(
-      title: 'Icon Test',
-      sections: [sectionItem1],
-    );
-    /* tabItem2 = TabItem(
-      title: 'Svg Data',
+      title: 'Svg Test',
       sections: [sectionItem3],
-    ); */
+    );
+
     super.initState();
   }
 
   String selectedIcon = '';
-  IconDataIconValue? selectedIconValue;
+  IconValue? selectedIconValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,12 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(
               height: 400,
-              child: IconPickerWidget<IconData>(
+              child: IconPickerWidget(
                   selectedIcon: selectedIconValue,
                   tabs: [tabItem1, tabItem2],
                   onIconSelected: (icon) {
                     setState(() {
-                      selectedIconValue = icon as IconDataIconValue;
+                      selectedIconValue = icon;
                       debugPrint('selected icon is $icon');
                       selectedIcon = selectedIconValue!.name;
                     });

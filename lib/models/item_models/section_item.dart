@@ -1,8 +1,8 @@
 import 'package:icon_gallery/models/icon_value.dart';
 
-class SectionItem<T> {
+class SectionItem {
   final String title;
-  final List<IconValue<T>> icons;
+  final List<IconValue> icons;
 
   SectionItem({
     required this.title,

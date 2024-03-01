@@ -22,7 +22,7 @@ class SvgIconValue extends IconValue<String> {
     return SvgPicture.asset(
       value,
       fit: fit ?? BoxFit.none,
-      colorFilter: ColorFilter.mode(color ?? Colors.white, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(color ?? Colors.red, BlendMode.srcIn),
       width: size,
       height: size,
     );

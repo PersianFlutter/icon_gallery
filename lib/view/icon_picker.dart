@@ -5,10 +5,10 @@ import 'package:icon_gallery/models/item_models/tab_item.dart';
 
 typedef OnIconSelected<T> = void Function(IconValue<T> selectedIcon);
 
-class IconPickerWidget<T> extends StatefulWidget {
-  final List<TabItem<T>> tabs;
-  final IconValue<T>? selectedIcon;
-  final OnIconSelected<T> onIconSelected;
+class IconPickerWidget extends StatefulWidget {
+  final List<TabItem> tabs;
+  final IconValue? selectedIcon;
+  final OnIconSelected onIconSelected;
 
   const IconPickerWidget(
       {super.key,
@@ -17,10 +17,10 @@ class IconPickerWidget<T> extends StatefulWidget {
       required this.onIconSelected});
 
   @override
-  State<IconPickerWidget<T>> createState() => _IconPickerWidgetState<T>();
+  State<IconPickerWidget> createState() => _IconPickerWidgetState();
 }
 
-class _IconPickerWidgetState<T> extends State<IconPickerWidget<T>> {
+class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
   late PageController _pageController;
   @override
   void initState() {
