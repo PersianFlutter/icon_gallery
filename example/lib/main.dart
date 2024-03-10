@@ -63,9 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late SectionItem sectionItem1;
   late SectionItem sectionItem2;
   late SectionItem sectionItem3;
-  late TabItem tabItem1;
 
-  late TabItem tabItem2;
   @override
   void initState() {
     iconList1 = [
@@ -118,14 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
       title: 'SVG General',
       icons: iconList3,
     );
-    tabItem1 = TabItem(
-      title: 'Icon Data',
-      sections: [sectionItem1, sectionItem2],
-    );
-    tabItem2 = TabItem(
-      title: 'Svg Test',
-      sections: [sectionItem3],
-    );
 
     super.initState();
   }
@@ -152,7 +142,11 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 400,
               child: IconPickerWidget(
                   selectedIcon: selectedIconValue,
-                  tabs: [tabItem1, tabItem2],
+                  sections: [
+                    sectionItem1,
+                    sectionItem2,
+                    sectionItem3,
+                  ],
                   onIconSelected: (icon) {
                     setState(() {
                       selectedIconValue = icon;
@@ -161,40 +155,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                   }),
             ),
+            TextButton(onPressed: () {}, child: const Text('Show As Dialog')),
             TextButton(
-                onPressed: () {
-                  IconPickerWidget.showAsDialog(
-                    context: context,
-                    selectedIcon: selectedIconValue,
-                    tabs: [tabItem1, tabItem2],
-                    onIconSelected: (icon) {
-                      Navigator.pop(context);
-                      setState(() {
-                        selectedIconValue = icon;
-                        debugPrint('selected icon is $icon');
-                        selectedIcon = selectedIconValue!.name;
-                      });
-                    },
-                  );
-                },
-                child: const Text('Show As Dialog')),
-            TextButton(
-                onPressed: () {
-                  IconPickerWidget.showAsBottomSheet(
-                    context: context,
-                    selectedIcon: selectedIconValue,
-                    tabs: [tabItem1, tabItem2],
-                    onIconSelected: (icon) {
-                      Navigator.pop(context);
-                      setState(() {
-                        selectedIconValue = icon;
-                        debugPrint('selected icon is $icon');
-                        selectedIcon = selectedIconValue!.name;
-                      });
-                    },
-                  );
-                },
-                child: const Text('Show As BottomSheet')),
+                onPressed: () {}, child: const Text('Show As BottomSheet')),
           ],
         ),
       ),
