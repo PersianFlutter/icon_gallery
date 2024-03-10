@@ -1,8 +1,5 @@
-library icon_gallery;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-  show() {}
-}
+export 'package:icon_gallery/widget/gallery_widget.dart';
+export 'package:icon_gallery/model/type/icon_item.dart';
+export 'package:icon_gallery/model/section_item.dart';
+export 'package:icon_gallery/model/type/icon_data_item.dart';
+export 'package:icon_gallery/model/type/svg_item.dart';
