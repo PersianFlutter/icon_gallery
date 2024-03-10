@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:icon_gallery/model/type/icon_item.dart';
 
 class SvgItem extends IconItem<String> {
- const SvgItem({required super.name, required String svgPath})
+  const SvgItem({required super.name, required String svgPath})
       : super(value: svgPath);
 
   @override
