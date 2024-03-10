@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:icon_gallery/models/type/icon_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
 
 class SectionItem extends Equatable {
   const SectionItem({

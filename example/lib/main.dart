@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(
               height: 400,
-              child: IconPickerWidget(
+              child: IconGallery(
                   selectedIcon: selectedIconValue,
                   sections: [
                     sectionItem1,

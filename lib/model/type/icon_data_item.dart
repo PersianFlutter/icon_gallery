@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:icon_gallery/models/type/icon_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
 
 class IconDataItem extends IconItem<IconData> {
   const IconDataItem({required super.name, required super.value});

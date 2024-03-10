@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:icon_gallery/models/type/icon_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
 
 class SvgItem extends IconItem<String> {
  const SvgItem({required super.name, required String svgPath})

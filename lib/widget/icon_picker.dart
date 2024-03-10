@@ -1,26 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:icon_gallery/models/type/icon_item.dart';
-import 'package:icon_gallery/models/section_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
+import 'package:icon_gallery/model/section_item.dart';
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
-class IconPickerWidget extends StatefulWidget {
+class IconGallery extends StatefulWidget {
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
 
-  const IconPickerWidget({
+  const IconGallery({
     super.key,
     required this.sections,
     this.selectedIcon,
     required this.onIconSelected,
   });
 
+  IconGallery.list({
+    Key? key,
+    String title = 'Icons',
+    required List<IconItem> icons,
+    IconItem? selectedIcon,
+    required OnIconSelected onIconSelected,
+  }) : this(
+          key: key,
+          sections: [
+            SectionItem(
+              title: title,
+              items: icons,
+            ),
+          ],
+          selectedIcon: selectedIcon,
+          onIconSelected: onIconSelected,
+        );
+
   @override
-  State<IconPickerWidget> createState() => _IconPickerWidgetState();
+  State<IconGallery> createState() => _IconGalleryState();
 }
 
-class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
+class _IconGalleryState<T> extends State<IconGallery> {
   @override
   Widget build(BuildContext context) {
     return Column(
