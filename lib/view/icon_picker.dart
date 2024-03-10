@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:icon_gallery/decorators/selected_icon_value.dart';
-import 'package:icon_gallery/models/icon_value.dart';
-import 'package:icon_gallery/models/item_models/section_item.dart';
+import 'package:icon_gallery/models/type/icon_item.dart';
+import 'package:icon_gallery/models/section_item.dart';
 
-typedef OnIconSelected<T> = void Function(IconValue<T> selectedIcon);
+typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
 class IconPickerWidget extends StatefulWidget {
   final List<SectionItem> sections;
-  final IconValue? selectedIcon;
+  final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
 
   const IconPickerWidget({
@@ -42,16 +41,14 @@ class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
                             fontSize: 18, fontWeight: FontWeight.bold)),
                   ),
                   Wrap(
-                    children: section.icons.map((icon) {
+                    children: section.items.map((icon) {
                       final isSelected = widget.selectedIcon == icon;
-                      final iconWidget = isSelected
-                          ? SelectedIconValue(
-                              decoratedIcon: icon,
-                            )
-                          : icon;
 
                       return InkWell(
-                        child: iconWidget.build(context),
+                        child: IconHolder(
+                          isSelected: isSelected,
+                          icon: icon,
+                        ),
                         onTap: () {
                           widget.onIconSelected(icon);
                         },
@@ -64,6 +61,34 @@ class _IconPickerWidgetState<T> extends State<IconPickerWidget> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class IconHolder extends StatelessWidget {
+  const IconHolder({
+    super.key,
+    this.isSelected = false,
+    this.selectedColor = Colors.blue,
+    this.selectedBackgroundColor = Colors.transparent,
+    required this.icon,
+  });
+  final bool isSelected;
+  final Color selectedColor;
+  final Color selectedBackgroundColor;
+  final IconItem icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration:
+          BoxDecoration(color: selectedBackgroundColor, shape: BoxShape.circle),
+      child: icon.build(
+        context,
+        size: 24,
+        color: selectedColor,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }

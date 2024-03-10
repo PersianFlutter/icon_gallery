@@ -56,9 +56,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<IconDataIconValue> iconList1;
-  late List<IconDataIconValue> iconList2;
-  late List<SvgIconValue> iconList3;
+  late List<IconDataItem> iconList1;
+  late List<IconDataItem> iconList2;
+  late List<SvgItem> iconList3;
 
   late SectionItem sectionItem1;
   late SectionItem sectionItem2;
@@ -66,62 +66,55 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    iconList1 = [
-      IconDataIconValue(iconData: Icons.ac_unit, name: 'Ac Unit'),
-      IconDataIconValue(iconData: Icons.access_alarm, name: 'Access Alarm'),
-      IconDataIconValue(iconData: Icons.access_alarms, name: 'Access Alarms'),
-      IconDataIconValue(iconData: Icons.access_time, name: 'Access Time'),
-      IconDataIconValue(iconData: Icons.accessibility, name: 'Accessibility'),
-      IconDataIconValue(
-          iconData: Icons.accessibility_new, name: 'Accessibility New'),
+    iconList1 = const [
+      IconDataItem(value: Icons.ac_unit, name: 'Ac Unit'),
+      IconDataItem(value: Icons.access_alarm, name: 'Access Alarm'),
+      IconDataItem(value: Icons.access_alarms, name: 'Access Alarms'),
+      IconDataItem(value: Icons.access_time, name: 'Access Time'),
+      IconDataItem(value: Icons.accessibility, name: 'Accessibility'),
+      IconDataItem(value: Icons.accessibility_new, name: 'Accessibility New'),
     ];
-    iconList2 = [
-      IconDataIconValue(iconData: Icons.accessible, name: 'Accessible'),
-      IconDataIconValue(
-          iconData: Icons.accessible_forward, name: 'Accessible Forward'),
-      IconDataIconValue(
-          iconData: Icons.account_balance, name: 'Account Balance'),
-      IconDataIconValue(
-          iconData: Icons.account_balance_wallet,
-          name: 'Account Balance Wallet'),
-      IconDataIconValue(iconData: Icons.account_box, name: 'Account Box'),
-      IconDataIconValue(iconData: Icons.account_circle, name: 'Account Circle'),
-      IconDataIconValue(iconData: Icons.account_tree, name: 'Account Tree'),
-      IconDataIconValue(iconData: Icons.ad_units, name: 'Ad Units'),
-      IconDataIconValue(iconData: Icons.adb, name: 'Adb'),
-      IconDataIconValue(iconData: Icons.add, name: 'Add'),
+    iconList2 = const [
+      IconDataItem(value: Icons.accessible, name: 'Accessible'),
+      IconDataItem(value: Icons.accessible_forward, name: 'Accessible Forward'),
+      IconDataItem(value: Icons.account_balance, name: 'Account Balance'),
+      IconDataItem(
+          value: Icons.account_balance_wallet, name: 'Account Balance Wallet'),
+      IconDataItem(value: Icons.account_box, name: 'Account Box'),
+      IconDataItem(value: Icons.account_circle, name: 'Account Circle'),
+      IconDataItem(value: Icons.account_tree, name: 'Account Tree'),
+      IconDataItem(value: Icons.ad_units, name: 'Ad Units'),
+      IconDataItem(value: Icons.adb, name: 'Adb'),
+      IconDataItem(value: Icons.add, name: 'Add'),
     ];
 
-    iconList3 = [
-      SvgIconValue(
-          name: 'calc back', svgPath: 'assets/images/calc_back_icon.svg'),
-      SvgIconValue(
-          name: 'calc back', svgPath: 'assets/images/calendar_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/check_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/circle_icon.svg'),
-      SvgIconValue(name: 'calc back', svgPath: 'assets/images/cross_icon.svg'),
-      SvgIconValue(
-          name: 'calc back', svgPath: 'assets/images/income_type_icon.svg'),
+    iconList3 = const [
+      SvgItem(name: 'calc back', svgPath: 'assets/images/calc_back_icon.svg'),
+      SvgItem(name: 'calc back', svgPath: 'assets/images/calendar_icon.svg'),
+      SvgItem(name: 'calc back', svgPath: 'assets/images/check_icon.svg'),
+      SvgItem(name: 'calc back', svgPath: 'assets/images/circle_icon.svg'),
+      SvgItem(name: 'calc back', svgPath: 'assets/images/cross_icon.svg'),
+      SvgItem(name: 'calc back', svgPath: 'assets/images/income_type_icon.svg'),
     ];
 
     sectionItem1 = SectionItem(
       title: 'General',
-      icons: iconList1,
+      items: iconList1,
     );
     sectionItem2 = SectionItem(
       title: 'More',
-      icons: iconList2,
+      items: iconList2,
     );
     sectionItem3 = SectionItem(
       title: 'SVG General',
-      icons: iconList3,
+      items: iconList3,
     );
 
     super.initState();
   }
 
   String selectedIcon = '';
-  IconValue? selectedIconValue;
+  IconItem? selectedIconValue;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
