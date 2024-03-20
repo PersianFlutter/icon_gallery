@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:icon_gallery/model/type/icon_item.dart';
 import 'package:icon_gallery/model/section_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
@@ -54,9 +54,11 @@ class _IconGalleryState<T> extends State<IconGallery> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(section.title,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      section.title,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Wrap(
                     children: section.items.map((icon) {
