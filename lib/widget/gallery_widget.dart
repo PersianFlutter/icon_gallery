@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:icon_gallery/model/section_item.dart';
 import 'package:icon_gallery/model/type/icon_item.dart';
+import 'package:icon_gallery/widget/icon_gallery_style.dart';
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
 class IconGallery extends StatefulWidget {
+  final IconGalleryStyle? style;
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
-  final double maxCrossAxisExtent;
 
   const IconGallery({
     super.key,
     required this.sections,
     required this.onIconSelected,
+    this.style,
     this.selectedIcon,
-    this.maxCrossAxisExtent = 30,
   });
 
   IconGallery.list({
     Key? key,
-    String title = 'Icons',
     required List<IconItem> icons,
-    IconItem? selectedIcon,
     required OnIconSelected onIconSelected,
+    IconItem? selectedIcon,
+    String title = 'Icons',
   }) : this(
           key: key,
           sections: [
@@ -48,7 +49,12 @@ class _IconGalleryState<T> extends State<IconGallery> {
             onTap: () {
               widget.onIconSelected(e);
             },
-            child: e.build(context),
+            child: e.build(
+              context,
+              color: widget.style?.itemColor,
+              fit: widget.style?.fit,
+              size: widget.style?.itemSize,
+            ),
           ),
         )
         .toList();
@@ -64,23 +70,35 @@ class _IconGalleryState<T> extends State<IconGallery> {
             itemCount: widget.sections.length,
             itemBuilder: (context, sectionIndex) {
               final section = widget.sections[sectionIndex];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    section.title,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  GridView.extent(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    maxCrossAxisExtent: widget.maxCrossAxisExtent,
-                    children: _itemBuilder(
-                      widget.sections[sectionIndex].items,
+              return Padding(
+                padding: widget.style?.sectionPadding ?? EdgeInsets.zero,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          widget.style?.sectionTitlePadding ?? EdgeInsets.zero,
+                      child: Text(
+                        section.title,
+                        style: widget.style?.sectionTitleStyle ??
+                            TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black.withOpacity(.5),
+                            ),
+                      ),
                     ),
-                  ),
-                ],
+                    GridView.extent(
+                      shrinkWrap: true,
+                      padding: widget.style?.gridViewPadding,
+                      maxCrossAxisExtent:
+                          widget.style?.gridViewMaxCrossAxisExtent ?? 30,
+                      children: _itemBuilder(
+                        widget.sections[sectionIndex].items,
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           ),

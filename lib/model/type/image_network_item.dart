@@ -13,7 +13,7 @@ class ImageNetworkItem extends IconItem<String> {
   Widget build(
     BuildContext context, {
     /// The size of the rendered image. Defaults to 24.
-    double size = 24,
+    double? size = 24,
     Color? color,
 
     /// The fit mode for the image. Defaults to BoxFit.none.

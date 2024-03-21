@@ -13,7 +13,7 @@ abstract class IconItem<T> with EquatableMixin {
 
   Widget build(
     BuildContext context, {
-    double size = 24,
+    double? size = 24,
     Color? color,
     BoxFit? fit,
   });

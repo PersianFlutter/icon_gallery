@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icon_gallery/icon_gallery.dart';
+import 'package:icon_gallery/widget/icon_gallery_style.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
   late SectionItem sectionItem1;
   late SectionItem sectionItem2;
   late SectionItem sectionItem3;
+
+  late IconGalleryStyle style;
 
   @override
   void initState() {
@@ -85,6 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
       items: iconList3,
     );
 
+    style = IconGalleryStyle(
+      itemColor: Colors.black,
+      itemSize: 30,
+      sectionPadding: const EdgeInsets.symmetric(vertical: 10),
+      gridViewMaxCrossAxisExtent: 40,
+    );
+
     super.initState();
   }
 
@@ -108,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
               height: 400,
               width: MediaQuery.sizeOf(context).width * .5,
               child: IconGallery(
+                  style: style,
                   selectedIcon: selectedIconValue,
                   sections: [
                     sectionItem1,
