@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       itemColor: Colors.black,
       itemSize: 30,
       sectionPadding: const EdgeInsets.symmetric(vertical: 10),
-      gridViewMaxCrossAxisExtent: 40,
+      gridViewMaxCrossAxisExtent: 30,
     );
 
     super.initState();
@@ -114,24 +114,28 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'selected Item is :$selectedIcon ',
             ),
+            const SizedBox(
+              height: 30,
+            ),
             SizedBox(
               height: 400,
               width: MediaQuery.sizeOf(context).width * .5,
               child: IconGallery(
-                  style: style,
-                  selectedIcon: selectedIconValue,
-                  sections: [
-                    sectionItem1,
-                    sectionItem2,
-                    sectionItem3,
-                  ],
-                  onIconSelected: (icon) {
-                    setState(() {
-                      selectedIconValue = icon;
-                      debugPrint('selected icon is $icon');
-                      selectedIcon = selectedIconValue!.name;
-                    });
-                  }),
+                style: style,
+                selectedIcon: selectedIconValue,
+                sections: [
+                  sectionItem1,
+                  sectionItem2,
+                  sectionItem3,
+                ],
+                onIconSelected: (icon) {
+                  setState(() {
+                    selectedIconValue = icon;
+                    debugPrint('selected icon is $icon');
+                    selectedIcon = selectedIconValue!.name;
+                  });
+                },
+              ),
             ),
             TextButton(
               onPressed: () {},

@@ -3,9 +3,17 @@ import 'package:icon_gallery/model/section_item.dart';
 import 'package:icon_gallery/model/type/icon_item.dart';
 import 'package:icon_gallery/widget/icon_gallery_style.dart';
 
+typedef SearchFieldBuilder = Widget Function(
+  BuildContext context,
+  TextEditingController controller,
+  FocusNode? focusNode,
+);
+
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
 class IconGallery extends StatefulWidget {
+  final SearchFieldBuilder? searchBarBuilder;
+  final TextEditingController? searchBarController;
   final IconGalleryStyle? style;
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
@@ -17,6 +25,8 @@ class IconGallery extends StatefulWidget {
     required this.onIconSelected,
     this.style,
     this.selectedIcon,
+    this.searchBarBuilder,
+    this.searchBarController,
   });
 
   IconGallery.list({
@@ -42,29 +52,40 @@ class IconGallery extends StatefulWidget {
 }
 
 class _IconGalleryState<T> extends State<IconGallery> {
-  List<Widget> _itemBuilder(List<IconItem> items) {
-    return items
-        .map(
-          (e) => InkWell(
-            onTap: () {
-              widget.onIconSelected(e);
-            },
-            child: e.build(
-              context,
-              color: widget.style?.itemColor,
-              fit: widget.style?.fit,
-              size: widget.style?.itemSize,
-            ),
-          ),
-        )
-        .toList();
+  late TextEditingController _searchBarController;
+  @override
+  void initState() {
+    super.initState();
+
+    _searchBarController =
+        widget.searchBarController ?? TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _disposeController();
+    super.dispose();
+  }
+
+  _disposeController() {
+    if (widget.searchBarController == null) {
+      _searchBarController.dispose();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final searchField = widget.searchBarBuilder?.call(
+          context,
+          _searchBarController,
+          null,
+        ) ??
+        DefaultSearchField(controller: _searchBarController);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        searchField,
         Expanded(
           child: ListView.builder(
             itemCount: widget.sections.length,
@@ -106,6 +127,24 @@ class _IconGalleryState<T> extends State<IconGallery> {
       ],
     );
   }
+
+  List<Widget> _itemBuilder(List<IconItem> items) {
+    return items
+        .map(
+          (e) => InkWell(
+            onTap: () {
+              widget.onIconSelected(e);
+            },
+            child: e.build(
+              context,
+              color: widget.style?.itemColor,
+              fit: widget.style?.fit,
+              size: widget.style?.itemSize,
+            ),
+          ),
+        )
+        .toList();
+  }
 }
 
 class IconHolder extends StatelessWidget {
@@ -131,6 +170,31 @@ class IconHolder extends StatelessWidget {
         size: 24,
         color: selectedColor,
         fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class DefaultSearchField extends StatelessWidget {
+  const DefaultSearchField({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        ),
+        hintText: 'Type for filter',
+        prefixIcon: Icon(Icons.search),
       ),
     );
   }
