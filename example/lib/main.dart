@@ -106,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(
               height: 400,
+              width: MediaQuery.sizeOf(context).width * .5,
               child: IconGallery(
                   selectedIcon: selectedIconValue,
                   sections: [

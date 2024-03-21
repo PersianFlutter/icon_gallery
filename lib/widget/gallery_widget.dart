@@ -8,12 +8,14 @@ class IconGallery extends StatefulWidget {
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
+  final double maxCrossAxisExtent;
 
   const IconGallery({
     super.key,
     required this.sections,
-    this.selectedIcon,
     required this.onIconSelected,
+    this.selectedIcon,
+    this.maxCrossAxisExtent = 30,
   });
 
   IconGallery.list({
@@ -39,6 +41,19 @@ class IconGallery extends StatefulWidget {
 }
 
 class _IconGalleryState<T> extends State<IconGallery> {
+  List<Widget> _itemBuilder(List<IconItem> items) {
+    return items
+        .map(
+          (e) => InkWell(
+            onTap: () {
+              widget.onIconSelected(e);
+            },
+            child: e.build(context),
+          ),
+        )
+        .toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,28 +67,18 @@ class _IconGalleryState<T> extends State<IconGallery> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      section.title,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                  Text(
+                    section.title,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  Wrap(
-                    children: section.items.map((icon) {
-                      final isSelected = widget.selectedIcon == icon;
-
-                      return InkWell(
-                        child: IconHolder(
-                          isSelected: isSelected,
-                          icon: icon,
-                        ),
-                        onTap: () {
-                          widget.onIconSelected(icon);
-                        },
-                      );
-                    }).toList(),
+                  GridView.extent(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    maxCrossAxisExtent: widget.maxCrossAxisExtent,
+                    children: _itemBuilder(
+                      widget.sections[sectionIndex].items,
+                    ),
                   ),
                 ],
               );
