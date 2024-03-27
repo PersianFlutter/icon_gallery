@@ -11,6 +11,11 @@ typedef SearchFieldBuilder = Widget Function(
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
+typedef FilterItemBuilder = List<SectionItem> Function(
+  List<SectionItem> items,
+  String filter,
+);
+
 class IconGallery extends StatefulWidget {
   final SearchFieldBuilder? searchBarBuilder;
   final TextEditingController? searchBarController;
@@ -53,12 +58,18 @@ class IconGallery extends StatefulWidget {
 
 class _IconGalleryState<T> extends State<IconGallery> {
   late TextEditingController _searchBarController;
+  late List<SectionItem> filteredItem;
+
   @override
   void initState() {
     super.initState();
 
+    filteredItem = widget.sections;
+
     _searchBarController =
         widget.searchBarController ?? TextEditingController();
+
+    _searchBarController.addListener(_onSearchFieldChanged);
   }
 
   @override
@@ -71,6 +82,21 @@ class _IconGalleryState<T> extends State<IconGallery> {
     if (widget.searchBarController == null) {
       _searchBarController.dispose();
     }
+  }
+
+  _onSearchFieldChanged() {
+    final searchValue = _searchBarController.text.toLowerCase();
+    setState(() {
+      filteredItem = widget.sections
+          .map((section) {
+            final filteredItems = section.items
+                .where((item) => item.name.toLowerCase().contains(searchValue))
+                .toList();
+            return section.copyWith(items: filteredItems);
+          })
+          .where((section) => section.items.isNotEmpty)
+          .toList();
+    });
   }
 
   @override
@@ -88,9 +114,9 @@ class _IconGalleryState<T> extends State<IconGallery> {
         searchField,
         Expanded(
           child: ListView.builder(
-            itemCount: widget.sections.length,
+            itemCount: filteredItem.length,
             itemBuilder: (context, sectionIndex) {
-              final section = widget.sections[sectionIndex];
+              final section = filteredItem[sectionIndex];
               return Padding(
                 padding: widget.style?.sectionPadding ?? EdgeInsets.zero,
                 child: Column(
@@ -115,7 +141,7 @@ class _IconGalleryState<T> extends State<IconGallery> {
                       maxCrossAxisExtent:
                           widget.style?.gridViewMaxCrossAxisExtent ?? 30,
                       children: _itemBuilder(
-                        widget.sections[sectionIndex].items,
+                        filteredItem[sectionIndex].items,
                       ),
                     ),
                   ],
