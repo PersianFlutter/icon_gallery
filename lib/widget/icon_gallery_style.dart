@@ -26,7 +26,11 @@ class IconGalleryStyle {
     this.gridViewPadding = EdgeInsets.zero,
     this.sectionPadding = EdgeInsets.zero,
     this.sectionTitlePadding = EdgeInsets.zero,
-    this.sectionTitleStyle,
+    this.sectionTitleStyle = const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Color.fromARGB(143, 0, 0, 0),
+    ),
     this.searchBarHintStyle,
     this.itemColor,
     this.fit,

@@ -156,12 +156,7 @@ class _IconGalleryState<T> extends State<IconGallery> {
                       padding: widget.style.sectionTitlePadding,
                       child: Text(
                         section.title,
-                        style: widget.style.sectionTitleStyle ??
-                            TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black.withOpacity(.5),
-                            ),
+                        style: widget.style.sectionTitleStyle,
                       ),
                     ),
                     GridView.extent(
