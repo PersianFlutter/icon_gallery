@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:icon_gallery/model/type/icon_item.dart';
 import 'package:icon_gallery/model/section_item.dart';
+import 'package:icon_gallery/model/type/icon_item.dart';
+import 'package:icon_gallery/widget/icon_gallery_style.dart';
+
+typedef SearchFieldBuilder = Widget Function(
+  BuildContext context,
+  TextEditingController controller,
+  FocusNode? focusNode,
+);
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
 class IconGallery extends StatefulWidget {
+  final SearchFieldBuilder? searchBarBuilder;
+  final TextEditingController? searchBarController;
+  final IconGalleryStyle style;
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
@@ -12,16 +22,20 @@ class IconGallery extends StatefulWidget {
   const IconGallery({
     super.key,
     required this.sections,
-    this.selectedIcon,
     required this.onIconSelected,
+    required this.style,
+    this.selectedIcon,
+    this.searchBarBuilder,
+    this.searchBarController,
   });
 
   IconGallery.list({
     Key? key,
-    String title = 'Icons',
     required List<IconItem> icons,
-    IconItem? selectedIcon,
     required OnIconSelected onIconSelected,
+    required IconItem? selectedIcon,
+    required double gridViewMaxCrossAxisExtent,
+    String title = 'Icons',
   }) : this(
           key: key,
           sections: [
@@ -30,6 +44,9 @@ class IconGallery extends StatefulWidget {
               items: icons,
             ),
           ],
+          style: IconGalleryStyle(
+            gridViewMaxCrossAxisExtent: gridViewMaxCrossAxisExtent,
+          ),
           selectedIcon: selectedIcon,
           onIconSelected: onIconSelected,
         );
@@ -39,47 +56,144 @@ class IconGallery extends StatefulWidget {
 }
 
 class _IconGalleryState<T> extends State<IconGallery> {
+  late TextEditingController _searchBarController;
+  late List<SectionItem> filteredItem;
+
+  @override
+  void initState() {
+    super.initState();
+
+    filteredItem = widget.sections;
+
+    _searchBarController =
+        widget.searchBarController ?? TextEditingController();
+
+    _searchBarController.addListener(_onSearchFieldChanged);
+  }
+
+  @override
+  void didUpdateWidget(covariant IconGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateTextEditingController(
+      oldWidget.searchBarController,
+      widget.searchBarController,
+    );
+  }
+
+  @override
+  void dispose() {
+    _disposeController();
+    super.dispose();
+  }
+
+  _disposeController() {
+    if (widget.searchBarController == null) {
+      _searchBarController.dispose();
+    }
+  }
+
+  void _updateTextEditingController(
+    TextEditingController? old,
+    TextEditingController? current,
+  ) {
+    if ((old == null && current == null) || old == current) {
+      return;
+    }
+    if (old == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController.dispose();
+      _searchBarController = current!;
+    } else if (current == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = TextEditingController();
+    } else {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = current;
+    }
+    _searchBarController.addListener(_onSearchFieldChanged);
+  }
+
+  _onSearchFieldChanged() {
+    final searchValue = _searchBarController.text.toLowerCase();
+    setState(() {
+      filteredItem = widget.sections
+          .map((section) {
+            final filteredItems = section.items
+                .where((item) => item.name.toLowerCase().contains(searchValue))
+                .toList();
+            return section.copyWith(items: filteredItems);
+          })
+          .where((section) => section.items.isNotEmpty)
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final searchField = widget.searchBarBuilder?.call(
+          context,
+          _searchBarController,
+          null,
+        ) ??
+        DefaultSearchField(controller: _searchBarController);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        searchField,
         Expanded(
           child: ListView.builder(
-            itemCount: widget.sections.length,
+            itemCount: filteredItem.length,
             itemBuilder: (context, sectionIndex) {
-              final section = widget.sections[sectionIndex];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(section.title,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                  ),
-                  Wrap(
-                    children: section.items.map((icon) {
-                      final isSelected = widget.selectedIcon == icon;
-
-                      return InkWell(
-                        child: IconHolder(
-                          isSelected: isSelected,
-                          icon: icon,
-                        ),
-                        onTap: () {
-                          widget.onIconSelected(icon);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ],
+              final section = filteredItem[sectionIndex];
+              return Padding(
+                padding: widget.style.sectionPadding,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: widget.style.sectionTitlePadding,
+                      child: Text(
+                        section.title,
+                        style: widget.style.sectionTitleStyle,
+                      ),
+                    ),
+                    GridView.extent(
+                      shrinkWrap: true,
+                      padding: widget.style.gridViewPadding,
+                      maxCrossAxisExtent:
+                          widget.style.gridViewMaxCrossAxisExtent,
+                      children: _itemBuilder(
+                        filteredItem[sectionIndex].items,
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           ),
         ),
       ],
     );
+  }
+
+  List<Widget> _itemBuilder(List<IconItem> items) {
+    return items
+        .map(
+          (e) => InkWell(
+            onTap: () {
+              widget.onIconSelected(e);
+            },
+            child: e.build(
+              context,
+              color: widget.style.itemColor,
+              fit: widget.style.fit,
+              size: widget.style.itemSize,
+            ),
+          ),
+        )
+        .toList();
   }
 }
 
@@ -106,6 +220,31 @@ class IconHolder extends StatelessWidget {
         size: 24,
         color: selectedColor,
         fit: BoxFit.contain,
+      ),
+    );
+  }
+}
+
+class DefaultSearchField extends StatelessWidget {
+  const DefaultSearchField({
+    super.key,
+    required this.controller,
+  });
+
+  final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        ),
+        hintText: 'Type for filter',
+        prefixIcon: Icon(Icons.search),
       ),
     );
   }
