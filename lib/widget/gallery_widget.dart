@@ -11,15 +11,10 @@ typedef SearchFieldBuilder = Widget Function(
 
 typedef OnIconSelected<T> = void Function(IconItem<T> selectedIcon);
 
-typedef FilterItemBuilder = List<SectionItem> Function(
-  List<SectionItem> items,
-  String filter,
-);
-
 class IconGallery extends StatefulWidget {
   final SearchFieldBuilder? searchBarBuilder;
   final TextEditingController? searchBarController;
-  final IconGalleryStyle? style;
+  final IconGalleryStyle style;
   final List<SectionItem> sections;
   final IconItem? selectedIcon;
   final OnIconSelected onIconSelected;
@@ -28,7 +23,7 @@ class IconGallery extends StatefulWidget {
     super.key,
     required this.sections,
     required this.onIconSelected,
-    this.style,
+    required this.style,
     this.selectedIcon,
     this.searchBarBuilder,
     this.searchBarController,
@@ -38,7 +33,8 @@ class IconGallery extends StatefulWidget {
     Key? key,
     required List<IconItem> icons,
     required OnIconSelected onIconSelected,
-    IconItem? selectedIcon,
+    required IconItem? selectedIcon,
+    required double gridViewMaxCrossAxisExtent,
     String title = 'Icons',
   }) : this(
           key: key,
@@ -48,6 +44,9 @@ class IconGallery extends StatefulWidget {
               items: icons,
             ),
           ],
+          style: IconGalleryStyle(
+            gridViewMaxCrossAxisExtent: gridViewMaxCrossAxisExtent,
+          ),
           selectedIcon: selectedIcon,
           onIconSelected: onIconSelected,
         );
@@ -118,16 +117,15 @@ class _IconGalleryState<T> extends State<IconGallery> {
             itemBuilder: (context, sectionIndex) {
               final section = filteredItem[sectionIndex];
               return Padding(
-                padding: widget.style?.sectionPadding ?? EdgeInsets.zero,
+                padding: widget.style.sectionPadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding:
-                          widget.style?.sectionTitlePadding ?? EdgeInsets.zero,
+                      padding: widget.style.sectionTitlePadding,
                       child: Text(
                         section.title,
-                        style: widget.style?.sectionTitleStyle ??
+                        style: widget.style.sectionTitleStyle ??
                             TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -137,9 +135,9 @@ class _IconGalleryState<T> extends State<IconGallery> {
                     ),
                     GridView.extent(
                       shrinkWrap: true,
-                      padding: widget.style?.gridViewPadding,
+                      padding: widget.style.gridViewPadding,
                       maxCrossAxisExtent:
-                          widget.style?.gridViewMaxCrossAxisExtent ?? 30,
+                          widget.style.gridViewMaxCrossAxisExtent,
                       children: _itemBuilder(
                         filteredItem[sectionIndex].items,
                       ),
@@ -163,9 +161,9 @@ class _IconGalleryState<T> extends State<IconGallery> {
             },
             child: e.build(
               context,
-              color: widget.style?.itemColor,
-              fit: widget.style?.fit,
-              size: widget.style?.itemSize,
+              color: widget.style.itemColor,
+              fit: widget.style.fit,
+              size: widget.style.itemSize,
             ),
           ),
         )

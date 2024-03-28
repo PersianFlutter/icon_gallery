@@ -18,10 +18,10 @@ class IconGalleryStyle {
   final BoxFit? fit;
 
   // gridView styles
-  final double? gridViewMaxCrossAxisExtent;
+  final double gridViewMaxCrossAxisExtent;
 
   IconGalleryStyle({
-    this.gridViewMaxCrossAxisExtent,
+    required this.gridViewMaxCrossAxisExtent,
     this.itemSize,
     this.gridViewPadding = EdgeInsets.zero,
     this.sectionPadding = EdgeInsets.zero,

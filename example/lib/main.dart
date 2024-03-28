@@ -89,10 +89,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     style = IconGalleryStyle(
+      gridViewMaxCrossAxisExtent: 40,
       itemColor: Colors.black,
       itemSize: 30,
       sectionPadding: const EdgeInsets.symmetric(vertical: 10),
-      gridViewMaxCrossAxisExtent: 30,
     );
 
     super.initState();
