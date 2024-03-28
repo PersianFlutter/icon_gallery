@@ -32,6 +32,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late TextEditingController searchBarController;
+
   late List<IconDataItem> iconList1;
   late List<IconDataItem> iconList2;
   late List<SvgItem> iconList3;
@@ -44,6 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    searchBarController = TextEditingController();
+
     iconList1 = const [
       IconDataItem(value: Icons.ac_unit, name: 'Ac Unit'),
       IconDataItem(value: Icons.access_alarm, name: 'Access Alarm'),
@@ -98,6 +102,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    searchBarController.dispose();
+    super.dispose();
+  }
+
   String selectedIcon = '';
   IconItem? selectedIconValue;
   @override
@@ -122,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
               width: MediaQuery.sizeOf(context).width * .5,
               child: IconGallery(
                 style: style,
+                searchBarController: searchBarController,
                 selectedIcon: selectedIconValue,
                 sections: [
                   sectionItem1,

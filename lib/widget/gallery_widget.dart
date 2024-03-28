@@ -72,6 +72,16 @@ class _IconGalleryState<T> extends State<IconGallery> {
   }
 
   @override
+  void didUpdateWidget(covariant IconGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateTextEditingController(
+      oldWidget.searchBarController,
+      widget.searchBarController,
+    );
+  }
+
+  @override
   void dispose() {
     _disposeController();
     super.dispose();
@@ -81,6 +91,27 @@ class _IconGalleryState<T> extends State<IconGallery> {
     if (widget.searchBarController == null) {
       _searchBarController.dispose();
     }
+  }
+
+  void _updateTextEditingController(
+    TextEditingController? old,
+    TextEditingController? current,
+  ) {
+    if ((old == null && current == null) || old == current) {
+      return;
+    }
+    if (old == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController.dispose();
+      _searchBarController = current!;
+    } else if (current == null) {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = TextEditingController();
+    } else {
+      _searchBarController.removeListener(_onSearchFieldChanged);
+      _searchBarController = current;
+    }
+    _searchBarController.addListener(_onSearchFieldChanged);
   }
 
   _onSearchFieldChanged() {
